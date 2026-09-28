@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Publik Mutasi Jagat Saksana</title>
+  <style>
+    :root {
+      --bg: #eef3f1;
+      --panel: #ffffff;
+      --panel-alt: #f5faf8;
+      --border: #d9e3df;
+      --line: #cedad6;
+      --text: #18312c;
+      --muted: #5d6f6a;
+      --accent: #124d4a;
+      --accent-2: #2b7a72;
+      --accent-soft: #dfeeea;
+      --gold: #c89a40;
+      --shadow: rgba(15, 38, 32, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", sans-serif;
+      background:
+        linear-gradient(180deg, #f6f8f7 0%, #edf2ef 100%),
+        repeating-linear-gradient(90deg, rgba(18, 77, 74, 0.02) 0, rgba(18, 77, 74, 0.02) 1px, transparent 1px, transparent 28px),
+        repeating-linear-gradient(0deg, rgba(18, 77, 74, 0.02) 0, rgba(18, 77, 74, 0.02) 1px, transparent 1px, transparent 28px);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 32px 22px 48px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding: 22px 26px;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--gold);
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #f5faf8 100%);
+      box-shadow: 0 8px 25px var(--shadow);
+    }
+    .title {
+      margin: 0;
+      font-size: clamp(24px, 2vw, 32px);
+      font-weight: 700;
+      letter-spacing: .3px;
+      color: var(--accent);
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel-alt);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(160px, 1fr));
+      gap: 16px;
+      margin: 0 0 20px;
+    }
+    .stat-card {
+      padding: 18px 18px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: 0 6px 18px var(--shadow);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+    }
+    .stat-value {
+      margin-top: 10px;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px var(--shadow);
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #f9fbfa 0%, #f4f8f7 100%);
+      flex-wrap: wrap;
+    }
+    .panel-header h2 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    select, input {
+      min-height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+    .chart-wrap {
+      padding: 18px 18px 10px;
+    }
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(42px, 1fr));
+      gap: 10px;
+      min-width: 760px;
+      padding: 8px 0 0;
+    }
+    .bar-col {
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .bar-box {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      width: 100%;
+      height: 170px;
+      background: linear-gradient(180deg, #f3f7f5 0%, #edf3f1 100%);
+      border: 1px solid var(--border);
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      padding: 6px 0 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+    .bar {
+      width: 100%;
+      min-height: 10px;
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, #2d7e73 0%, #143d3a 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.26);
+    }
+    .table-wrap {
+      padding: 0 18px 18px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 11px 10px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    tbody tr:nth-child(even) {
+      background: #f8fbfa;
+    }
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 18px 10px;
+      font-size: 13px;
+    }
+    @media (max-width: 720px) {
+      .wrap { padding: 18px 14px 30px; }
+      .title { font-size: 24px; }
+      .stats { grid-template-columns: 1fr; }
+      .chart-grid { min-width: 680px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <h1 class="title">Dashboard Publik Mutasi Jagat Saksana</h1>
+        <div class="sub">Ringkasan data jaga dan serah terima</div>
+      </div>
+      <div class="meta">
+        <span class="chip" id="recordCount">0 data</span>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total data</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Petugas aktif</div>
+        <div class="stat-value" id="statOfficers">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Tahun saat ini</div>
+        <div class="stat-value" id="statYear">0</div>
+      </div>
+    </div>
+
+    <div class="dashboard">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Ringkasan data per bulan</h2>
+          <div class="filters">
+            <label class="field">
+              <span>Tahun grafik</span>
+              <select id="yearFilter"></select>
+            </label>
+            <label class="field">
+              <span>Nama petugas</span>
+              <select id="officerFilter"></select>
+            </label>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div id="chartRoot" class="chart-grid"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Data publik</h2>
+          <div class="filters">
+            <label class="field">
+              <span>Filter tahun</span>
+              <select id="tableYearFilter"></select>
+            </label>
+            <label class="field">
+              <span>Filter tanggal</span>
+              <input id="tableDateFilter" type="date">
+            </label>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama file</th>
+                <th>Tanggal</th>
+                <th>Tahun</th>
+                <th>Petugas</th>
+                <th>Penerima</th>
+                <th>Dinas</th>
+                <th>Kegiatan</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const payload = params.get("data");
+    let records = [];
+
+    function decodeRecords() {
+      if (!payload) return [];
+      try {
+        const plain = decodeURIComponent(escape(atob(payload)));
+        return JSON.parse(plain);
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function longDate(value) {
+      if (!value) return "-";
+      const [y, m, d] = value.split("-").map(Number);
+      const date = new Date(y, (m || 1) - 1, d || 1);
+      return isNaN(date) ? value : date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    function renderChart() {
+      const yearSelect = document.getElementById("yearFilter");
+      const officerSelect = document.getElementById("officerFilter");
+      const year = yearSelect.value || new Date().getFullYear();
+      const officer = officerSelect.value;
+      const details = Array(12).fill(0);
+
+      records.forEach((item) => {
+        const recordYear = String(item.year || item.data?.startDate?.slice(0, 4) || "");
+        const name = String(item.dutyName || item.data?.dutyName || "").trim();
+        if (recordYear !== String(year)) return;
+        if (officer && name !== officer) return;
+        const date = item.data?.startDate || item.savedAt?.slice(0, 10) || "";
+        const month = Number(date.slice(5, 7));
+        if (month >= 1 && month <= 12) details[month - 1] += 1;
+      });
+
+      const max = Math.max(...details, 1);
+      const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+      const chartRoot = document.getElementById("chartRoot");
+      chartRoot.innerHTML = months.map((label, index) => `
+        <div class="bar-col">
+          <div class="bar-box"><div class="bar" style="height:${Math.max(8, (details[index] / max) * 100)}%"></div></div>
+          <div>${label}</div>
+          <div>${details[index]}</div>
+        </div>
+      `).join("");
+
+      const filtered = records.filter((item) => {
+        const recordYear = String(item.year || item.data?.startDate?.slice(0, 4) || "");
+        const name = String(item.dutyName || item.data?.dutyName || "").trim();
+        return (recordYear === String(year)) && (!officer || name === officer);
+      });
+
+      const totalLabel = document.getElementById("recordCount");
+      totalLabel.textContent = `${filtered.length} data`;
+
+      const totalStat = document.getElementById("statTotal");
+      const officerStat = document.getElementById("statOfficers");
+      const yearStat = document.getElementById("statYear");
+      if (totalStat) totalStat.textContent = String(records.length || 0);
+      if (officerStat) officerStat.textContent = String(new Set(records.map((item) => String(item.dutyName || item.data?.dutyName || "").trim()).filter(Boolean)).size || 0);
+      if (yearStat) yearStat.textContent = String(year || new Date().getFullYear());
+    }
+
+    function renderTable() {
+      const tableYear = document.getElementById("tableYearFilter").value;
+      const dateFilter = document.getElementById("tableDateFilter").value;
+      const rows = records.filter((item) => {
+        const recordYear = String(item.year || item.data?.startDate?.slice(0, 4) || "");
+        const recordDate = String(item.data?.startDate || item.savedAt?.slice(0, 10) || "");
+        const okYear = !tableYear || recordYear === tableYear;
+        const okDate = !dateFilter || recordDate === dateFilter;
+        return okYear && okDate;
+      });
+
+      const tbody = document.getElementById("tableBody");
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td class="empty" colspan="7">Belum ada data tersimpan.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = rows.map((item) => {
+        const data = item.data || item;
+        return `
+          <tr>
+            <td>${(data.dutyName ? `${data.dutyName} - ` : "") + (data.startDate ? data.startDate : "Data Mutasi Jagat Saksana")}</td>
+            <td>${longDate(data.startDate || item.savedAt?.slice(0, 10))}</td>
+            <td>${data.startDate ? data.startDate.slice(0, 4) : item.year || "-"}</td>
+            <td>${data.dutyName || "-"}</td>
+            <td>${data.receiverName || "-"}</td>
+            <td>${data.dutyType || "-"}</td>
+            <td>${(data.activities || []).filter((row) => String(row.task || "").trim()).length}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function setupFilters() {
+      const years = [...new Set(records.map((item) => String(item.year || item.data?.startDate?.slice(0, 4) || "")).filter(Boolean))].sort((a, b) => Number(b) - Number(a));
+      const officerNames = [...new Set(records.map((item) => String(item.dutyName || item.data?.dutyName || "").trim()).filter(Boolean))].sort();
+
+      const yearSelect = document.getElementById("yearFilter");
+      const officerSelect = document.getElementById("officerFilter");
+      const tableYearFilter = document.getElementById("tableYearFilter");
+      const defaultYear = years[0] || new Date().getFullYear();
+
+      yearSelect.innerHTML = ['<option value="">Semua tahun</option>'].concat(years.map((y) => `<option value="${y}">${y}</option>`)).join("");
+      officerSelect.innerHTML = ['<option value="">Semua petugas</option>'].concat(officerNames.map((name) => `<option value="${name}">${name}</option>`)).join("");
+      tableYearFilter.innerHTML = ['<option value="">Semua tahun</option>'].concat(years.map((y) => `<option value="${y}">${y}</option>`)).join("");
+
+      yearSelect.value = String(defaultYear);
+      tableYearFilter.value = "";
+      officerSelect.value = "";
+
+      yearSelect.onchange = renderChart;
+      officerSelect.onchange = renderChart;
+      tableYearFilter.onchange = renderTable;
+      document.getElementById("tableDateFilter").onchange = renderTable;
+    }
+
+    function init() {
+      records = decodeRecords();
+      setupFilters();
+      renderChart();
+      renderTable();
+    }
+
+    init();
+  </script>
+</body>
+</html>
